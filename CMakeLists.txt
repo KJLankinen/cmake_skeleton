@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.20...3.29)
 
-project(jlfoam
+project(skeleton
     VERSION 0.1
-    DESCRIPTION "Foam simulation"
+    DESCRIPTION "Skeleton for modern CMake"
     LANGUAGES CXX)
 
 configure_file (
@@ -47,19 +47,6 @@ endif()
 # FetchContent added in CMake 3.11, downloads during the configure step
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
 include(FetchContent)
-
-# Accumulator library
-# This is header only, so could be replaced with git submodules or FetchContent
-#find_package(Boost REQUIRED)
-## Adds Boost::boost
-#
-## Formatting library
-#FetchContent_Declare(
-#  fmtlib
-#  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-#  GIT_TAG 5.3.0)
-#FetchContent_MakeAvailable(fmtlib)
-## Adds fmt::fmt
 
 # The compiled library code is here
 add_subdirectory(src)

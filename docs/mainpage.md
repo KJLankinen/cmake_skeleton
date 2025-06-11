@@ -1,3 +1,3 @@
-# Documentation for jlfoam {#mainpage}
+# Documentation for skeleton {#mainpage}
 
-This is the documentation for jlfoam.
+This is the documentation for skeleton.

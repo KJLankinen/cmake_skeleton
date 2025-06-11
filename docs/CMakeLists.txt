@@ -1,1 +1,9 @@
-cmake_minimum_required(VERSION 3.18...3.29)
+set(DOXYGEN_EXTRACT_ALL YES)
+set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
+
+doxygen_add_docs(docs
+    ${CMAKE_PROJECT_NAME}/lib.hpp
+    "${CMAKE_CURRENT_SOURCE_DIR}/mainpage.md"
+    WORKING_DIRECTORY
+    "${PROJECT_SOURCE_DIR}/include"
+    )

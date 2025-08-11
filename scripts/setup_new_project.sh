@@ -14,7 +14,7 @@ done
 
 for file in $(git grep -r SKELETON | awk -F: '{print $1}')
 do
-    sed -i "s/SKELETON/\L$1/g" $file
+    sed -i "s/SKELETON/\U$1/g" $file
 done
 
 mv include/skeleton include/$1

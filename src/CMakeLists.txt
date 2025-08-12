@@ -10,14 +10,16 @@ add_custom_target(
     ${CMAKE_COMMAND}
     -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/version.cpp.in
     -D DST=${CMAKE_CURRENT_BINARY_DIR}/version.cpp
+    -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
+    -D PROJECT_NAME=${PROJECT_NAME}
+    -D PROJECT_VERSION=${PROJECT_VERSION}
+    -D PROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+    -D PROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+    -D PROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}
+    -D PROJECT_VERSION_TWEAK=${PROJECT_VERSION_TWEAK}
     -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
+    BYPRODUCTS ${CMAKE_BINARY_DIR}/src/version.cpp
 )
-
-add_library(version_lib ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
-add_dependencies(version_lib version)
-target_include_directories(version_lib PUBLIC ../include)
-target_compile_features(version_lib PUBLIC cxx_std_20)
-set_target_properties(version_lib PROPERTIES CXX_EXTENSIONS OFF)
 
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.
@@ -29,15 +31,16 @@ set(libname ${CMAKE_PROJECT_NAME}-lib)
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(${libname}
     lib.cpp
+    version.cpp
     ${HEADER_LIST})
+
+add_dependencies(${libname} version)
 
 # We need this directory, and users of our library will need it too
 target_include_directories(${libname} PUBLIC ../include)
 
 # This depends on (header only) boost
 #target_link_libraries(library PRIVATE Boost::boost)
-
-target_link_libraries(${libname} version_lib)
 
 # All users of this library will need at least C++20
 target_compile_features(${libname} PUBLIC cxx_std_20)

@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.20...3.29)
 
-# Todo replace this Skeleton with sed
+# Get a version number
+execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/version.sh
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE SKELETON_VERSION)
+
+# Todo replace Skeleton with sed
 project(skeleton
-    VERSION 0.1
+    VERSION ${SKELETON_VERSION}
     DESCRIPTION "Skeleton for modern CMake"
     LANGUAGES CXX)
 

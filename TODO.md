@@ -1,4 +1,4 @@
 ## TODO
 
-- Add License
 - Add install target
+- Parse git tag to version number with sed

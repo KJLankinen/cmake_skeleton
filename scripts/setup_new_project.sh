@@ -95,6 +95,9 @@ It's not a git repository yet, so you may want to do
 git init
 git add .
 git commit -m "Initial commit"
+
+# Git tags are used by CMake to set the version number of the project
+git tag -a v0.1
 ```
 EOF
 
@@ -102,4 +105,4 @@ rm -rf .git
 rm TODO.md
 rm -rf scripts
 mkdir scripts
-cp $script_dir/scripts/version.sh scripts/
+cp $script_dir/version.sh scripts/

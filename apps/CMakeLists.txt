@@ -13,3 +13,8 @@ target_link_libraries(${binname}
     PRIVATE
     ${CMAKE_PROJECT_NAME}-lib
     )
+
+install(TARGETS ${binname}
+    CONFIGURATIONS Release RelWithDebInfo Debug
+    RUNTIME DESTINATION ${project_install_dir}/bin
+    )

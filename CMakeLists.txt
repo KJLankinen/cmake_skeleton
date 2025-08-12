@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.29)
+cmake_minimum_required(VERSION 3.23...3.29)
 
 # Get a version number
 execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/version.sh
@@ -19,6 +19,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+# Set installation directory as name-version/build-type
+set(project_install_dir ${PROJECT_NAME}-${PROJECT_VERSION}/${CMAKE_BUILD_TYPE})
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)

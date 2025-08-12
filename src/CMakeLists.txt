@@ -1,3 +1,24 @@
+# This first part generates a library that has the current git hash hard coded into it
+# This version library will be linked to the actual library
+
+# Find git to make the version library
+find_package(Git)
+
+# Run a CMake script to generate the version file with the git hash
+add_custom_target(
+    version
+    ${CMAKE_COMMAND}
+    -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/version.cpp.in
+    -D DST=${CMAKE_CURRENT_BINARY_DIR}/version.cpp
+    -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
+)
+
+add_library(version_lib ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
+add_dependencies(version_lib version)
+target_include_directories(version_lib PUBLIC ../include)
+target_compile_features(version_lib PUBLIC cxx_std_20)
+set_target_properties(version_lib PROPERTIES CXX_EXTENSIONS OFF)
+
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.
 
@@ -15,6 +36,8 @@ target_include_directories(${libname} PUBLIC ../include)
 
 # This depends on (header only) boost
 #target_link_libraries(library PRIVATE Boost::boost)
+
+target_link_libraries(${libname} version_lib)
 
 # All users of this library will need at least C++20
 target_compile_features(${libname} PUBLIC cxx_std_20)

@@ -6,16 +6,6 @@ project(skeleton
     DESCRIPTION "Skeleton for modern CMake"
     LANGUAGES CXX)
 
-# Find git for getting the hash
-find_package(Git)
-# TODO find GIT_HASH
-
-configure_file (
-    "${PROJECT_SOURCE_DIR}/src/version.cpp.in"
-    "${PROJECT_BINARY_DIR}/src/version.cpp"
-    @ONLY
-)
-
 set(default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${default_build_type}' as none was specified.")

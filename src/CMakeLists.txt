@@ -4,6 +4,27 @@
 # Find git to make the version library
 find_package(Git)
 
+set(version_major ${PROJECT_VERSION_MAJOR})
+set(version_minor ${PROJECT_VERSION_MINOR})
+set(version_patch ${PROJECT_VERSION_PATCH})
+set(version_tweak ${PROJECT_VERSION_TWEAK})
+
+if (NOT DEFINED version_major)
+    set(version_major 0)
+endif()
+
+if (NOT DEFINED version_minor)
+    set(version_minor 0)
+endif()
+
+if (NOT DEFINED version_patch)
+    set(version_patch 0)
+endif()
+
+if (NOT DEFINED version_tweak)
+    set(version_tweak 0)
+endif()
+
 # Run a CMake script to generate the version file with the git hash
 add_custom_target(
     version
@@ -13,10 +34,10 @@ add_custom_target(
     -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
     -D PROJECT_NAME=${PROJECT_NAME}
     -D PROJECT_VERSION=${PROJECT_VERSION}
-    -D PROJECT_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
-    -D PROJECT_VERSION_MINOR=${PROJECT_VERSION_MINOR}
-    -D PROJECT_VERSION_PATCH=${PROJECT_VERSION_PATCH}
-    -D PROJECT_VERSION_TWEAK=${PROJECT_VERSION_TWEAK}
+    -D PROJECT_VERSION_MAJOR=${version_major}
+    -D PROJECT_VERSION_MINOR=${version_minor}
+    -D PROJECT_VERSION_PATCH=${version_patch}
+    -D PROJECT_VERSION_TWEAK=${version_tweak}
     -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
     BYPRODUCTS ${CMAKE_BINARY_DIR}/src/version.cpp
 )

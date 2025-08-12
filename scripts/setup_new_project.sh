@@ -33,8 +33,9 @@ then
 fi
 
 export project_name=$1
+script_dir=$(get_script_dir)
 
-git clone $(get_script_dir)/.. $project_name
+git clone $script_dir/.. $project_name
 cd $project_name
 
 for file in $(git grep -r skeleton | awk -F: '{print $1}')
@@ -45,6 +46,11 @@ done
 for file in $(git grep -r SKELETON | awk -F: '{print $1}')
 do
     sed -i "s/SKELETON/\U$project_name/g" $file
+done
+
+for file in $(git grep -r Skeleton | awk -F: '{print $1}')
+do
+    sed -i "s/Skeleton/$project_name/g" $file
 done
 
 mv include/skeleton include/$project_name
@@ -96,3 +102,4 @@ rm -rf .git
 rm TODO.md
 rm -rf scripts
 mkdir scripts
+cp $script_dir/scripts/version.sh scripts/

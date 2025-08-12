@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -e
 
 # Take on argument from user, replace "skeleton" with that
 if [ $# -ne 1 ]
@@ -60,8 +60,16 @@ ctest --test-dir build
 # Run a sample binary
 build/apps/name_of_project-bin
 ```
+
+It's not a git repository yet, so you may want to do
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
 EOF
 
 rm -rf .git
-rm -rf .gitignore
 rm TODO.md
+rm -rf scripts
+mkdir scripts

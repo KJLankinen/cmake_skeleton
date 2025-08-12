@@ -34,7 +34,7 @@ fi
 
 export project_name=$1
 
-git clone $(get_script_dir) $project_name
+git clone $(get_script_dir)/.. $project_name
 cd $project_name
 
 for file in $(git grep -r skeleton | awk -F: '{print $1}')

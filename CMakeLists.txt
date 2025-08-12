@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.20...3.29)
 
+# Todo replace this Skeleton with sed
 project(skeleton
     VERSION 0.1
     DESCRIPTION "Skeleton for modern CMake"
     LANGUAGES CXX)
 
+# Find git for getting the hash
+find_package(Git)
+# TODO find GIT_HASH
+
 configure_file (
-    "${PROJECT_SOURCE_DIR}/include/${CMAKE_PROJECT_NAME}/version.hpp.in"
-    "${PROJECT_BINARY_DIR}/include/${CMAKE_PROJECT_NAME}/version.hpp"
+    "${PROJECT_SOURCE_DIR}/src/version.cpp.in"
+    "${PROJECT_BINARY_DIR}/src/version.cpp"
+    @ONLY
 )
 
 set(default_build_type "Release")

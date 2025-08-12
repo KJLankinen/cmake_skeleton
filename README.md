@@ -1,29 +1,14 @@
-## What is this?
+# About
 
-A skeleton for a CMake project.
-Clone this and modify as needed to start a new C++ project.
+This is a skeleton for a CMake project.
 
-Alternatively, you can clone this once somewhere,
-copy the entire directory elsewhere, then cd to that directory
-and run `scripts/setup_new_project.sh name_of_project` to set it up.
+How to use this?
+1. Clone this repository to your machine
+2. Navigate to a directory where you want to setup the new project e.g. `~/Projects`
+3. Execute `/path/to/this/dir/scripts/setup_new_project.sh name_of_new_project`
 
-## Configure & build the skeleton project
+The script above will clone this repository locally, substitus some names with
+the given project name, remove some files and add some helpful advice to `README.md`.
 
-You should first compile the project you've just setup.
-
-Do that with:
-
-```bash
-# Create directory for build files
-mkdir build
-
-# Configure & build project
-cmake -S . -B build
-cmake --build build -t all
-
-# Run tests
-ctest --test-dir build
-
-# Run a sample binary
-build/apps/name_of_project-bin
-```
+If you end up using this often, you may want to make a symbolic link to the script
+in a directory that's in your path.

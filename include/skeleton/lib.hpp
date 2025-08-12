@@ -4,4 +4,6 @@
 ///
 /// This adds two integers together. Overflow is not checked.
 ///
+namespace skeleton {
 int add(int a, int b);
+}

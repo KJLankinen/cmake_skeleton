@@ -1,0 +1,20 @@
+#include "skeleton/version.hpp"
+#include <cstdio>
+
+namespace skeleton {
+    constexpr uint32_t PROJECT_VERSION_MAJOR = @PROJECT_VERSION_MAJOR@;
+    constexpr uint32_t PROJECT_VERSION_MINOR = @PROJECT_VERSION_MINOR@;
+    constexpr uint32_t PROJECT_VERSION_PATCH = @PROJECT_VERSION_PATCH@;
+    constexpr uint32_t PROJECT_VERSION_TWEAK = @PROJECT_VERSION_TWEAK@;
+    constexpr std::string_view PROJECT_VERSION_STRING = "@PROJECT_VERSION@";
+    constexpr std::string_view PROJECT_GIT_HASH = "@GIT_HASH@";
+    constexpr std::string_view PROJECT_NAME = "@PROJECT_NAME@";
+
+    void print_version() {
+        std::printf("%.*s: Version %.*s, commit %.*s\n",
+                static_cast<int32_t>(PROJECT_NAME.length()), PROJECT_NAME.data(),
+                static_cast<int32_t>(PROJECT_VERSION_STRING.length()), PROJECT_VERSION_STRING.data(),
+                static_cast<int32_t>(PROJECT_GIT_HASH.length()), PROJECT_GIT_HASH.data()
+                );
+    }
+}

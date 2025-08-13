@@ -26,8 +26,8 @@ get_script_dir()
 }
 
 replace() {
-    old = $1
-    new = $2
+    old=$1
+    new=$2
 
     for file in $(git grep -r $old | awk -F: '{print $1}')
     do

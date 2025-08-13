@@ -1,4 +1,4 @@
-set(binname ${CMAKE_PROJECT_NAME}-bin)
+set(binname ${project_name_lowercase}-cli)
 
 add_executable(${binname}
     app.cpp
@@ -16,5 +16,5 @@ target_link_libraries(${binname}
 
 install(TARGETS ${binname}
     CONFIGURATIONS Release
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    RUNTIME DESTINATION ${PROJECT_INSTALL_BINDIR}
     )

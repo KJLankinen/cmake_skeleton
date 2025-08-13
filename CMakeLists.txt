@@ -9,6 +9,8 @@ project(Skeleton
     VERSION ${SKELETON_VERSION}
     LANGUAGES CXX)
 
+string(TOLOWER ${PROJECT_NAME} project_name_lowercase)
+
 set(default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
@@ -46,8 +48,12 @@ endif()
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
 include(FetchContent)
 
-# Common install subdirectory names as variables
-include(GNUInstallDirs)
+# Set install directories
+set(project_dirname ${project_name_lowercase}-${PROJECT_VERSION_MAJOR})
+set(PROJECT_INSTALL_LIBDIR lib/${project_dirname})
+set(PROJECT_INSTALL_BINDIR bin)
+set(PROJECT_INSTALL_INCLUDEDIR include/${project_dirname})
+set(PROJECT_INSTALL_CMAKEDIR ${PROJECT_INSTALL_LIBDIR}/cmake)
 
 # The compiled library code is here
 add_subdirectory(src)

@@ -31,6 +31,7 @@ add_custom_target(
     -D DST=${CMAKE_CURRENT_BINARY_DIR}/version.cpp
     -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
     -D PROJECT_NAME=${PROJECT_NAME}
+    -D PROJECT_NAME_LOWERCASE=${project_name_lowercase}
     -D PROJECT_VERSION=${PROJECT_VERSION}
     -D PROJECT_VERSION_MAJOR=${version_major}
     -D PROJECT_VERSION_MINOR=${version_minor}
@@ -66,8 +67,8 @@ target_sources(${libname}
     BASE_DIRS
     ../include
     FILES
-    ../include/skeleton/lib.hpp
-    ../include/skeleton/version.hpp
+    ../include/${project_name_lowercase}/lib.hpp
+    ../include/${project_name_lowercase}/version.hpp
     )
 
 # The main library depends on the custom git version target
@@ -89,14 +90,11 @@ set_target_properties(${libname} PROPERTIES CXX_EXTENSIONS OFF)
 # This contains helper functions for creating config files
 include(CMakePackageConfigHelpers)
 
-# Where different cmake related files are installed
-set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
-
 # Copy the file from this directory to the binary directory
 # after substituting some variables
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
-    INSTALL_DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
+    INSTALL_DESTINATION ${PROJECT_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
 )
 
 # Generate a version file
@@ -124,21 +122,21 @@ write_basic_package_version_file(
 install(TARGETS ${libname}
     EXPORT ${CMAKE_PROJECT_NAME}Targets
     CONFIGURATIONS Release
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    ARCHIVE DESTINATION ${PROJECT_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${PROJECT_INSTALL_LIBDIR}
+    FILE_SET public_headers DESTINATION ${PROJECT_INSTALL_INCLUDEDIR}
     )
 
 # Installing the exported target file
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets
     FILE ${CMAKE_PROJECT_NAME}Targets.cmake
     NAMESPACE ${CMAKE_PROJECT_NAME}::
-    DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
+    DESTINATION ${PROJECT_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
 )
 
 # Install the config file and the version file
 install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake"
-    DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
+    DESTINATION ${PROJECT_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
 )

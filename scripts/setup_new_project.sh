@@ -26,6 +26,7 @@ get_script_dir()
 }
 
 replace() {
+    # This function replaces any $old in the repository with $new
     old=$1
     new=$2
 
@@ -35,19 +36,44 @@ replace() {
     done
 }
 
-# Take on argument from user, replace "skeleton" with that
-if [ $# -ne 1 ]
-then
-    echo "Give the name of the project as argument"
-    exit 1
-fi
+ensure_valid_name_as_cpp_variable() {
+    # This function generates a C++ file with the
+    # lowercase version of the given project name as a variable.
+    # Then the file is compiled using cmake to see if the
+    # project name is suitable or not.
+    
+    tmpdir=/tmp/setup_new_cmake_project_tmp
+    mkdir -p $tmpdir
+    cd $tmpdir 
+    cat > CMakeLists.txt << EOF
+project($project_name)
+file(GENERATE
+    OUTPUT main.cpp
+    CONTENT "int main() { int $lowercase_name = 0; }\n"
+    )
+add_executable(exe main.cpp)
+EOF
+cmake . . >/dev/null 2>&1
+cmake --build . >/dev/null 2>&1
+}
 
-# TODO make sure it's a legal variable name in C++
+exit_on_error() {
+    echo $1
+    exit 1
+}
+
+# Take on argument from user, replace "skeleton" with that
+[ $# -eq 1 ] || exit_on_error "Give the name of the project as argument"
 
 export project_name=$1
 export lowercase_name=${project_name,,}
 export uppercase_name=${lowercase_name^^}
 export capitalized_name=${lowercase_name^}
+
+cwd=${PWD}
+ensure_valid_name_as_cpp_variable || exit_on_error "The lowercase version of the given project name \"$lowercase_name\"\
+    is not a valid C++ variable name, which it needs to be"
+cd $cwd
 
 script_dir=$(get_script_dir)
 
@@ -112,5 +138,5 @@ rm -rf scripts
 mkdir scripts
 cp $script_dir/version.sh scripts/
 
-echo "Successfully initialized a new project!"
+echo "Successfully initialized a new project \"$lowercase_name\"!"
 cat README.md

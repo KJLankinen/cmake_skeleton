@@ -82,9 +82,20 @@ set_target_properties(${libname} PROPERTIES CXX_EXTENSIONS OFF)
 # For position independent code
 #set_target_properties(lib1 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+# Installing
+# Setting a name for the exported target
+# Installing the library and the headers
 install(TARGETS ${libname}
+    EXPORT ${libname}-targets
     CONFIGURATIONS Release
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
+
+# Installing the exported target file
+install(EXPORT ${libname}-targets
+        FILE ${libname}-targets.cmake
+        NAMESPACE ${libname}::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${libname}
+)

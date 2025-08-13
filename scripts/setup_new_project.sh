@@ -25,6 +25,16 @@ get_script_dir()
     echo "$SCRIPT_DIR"
 }
 
+replace() {
+    old = $1
+    new = $2
+
+    for file in $(git grep -r $old | awk -F: '{print $1}')
+    do
+        sed -i "s/$old/$new/g" $file
+    done
+}
+
 # Take on argument from user, replace "skeleton" with that
 if [ $# -ne 1 ]
 then
@@ -32,34 +42,29 @@ then
     exit 1
 fi
 
+# TODO make sure it's a legal variable name in C++
+
 export project_name=$1
+export lowercase_name=${project_name,,}
+export uppercase_name=${lowercase_name^^}
+export capitalized_name=${lowercase_name^}
+
 script_dir=$(get_script_dir)
 
-git clone $script_dir/.. $project_name
-cd $project_name
+git clone $script_dir/.. $lowercase_name
+cd $lowercase_name
 
-for file in $(git grep -r skeleton | awk -F: '{print $1}')
-do
-    sed -i "s/skeleton/$project_name/g" $file
-done
+replace skeleton $lowercase_name
+replace SKELETON $uppercase_name
+replace Skeleton $capitalized_name
 
-for file in $(git grep -r SKELETON | awk -F: '{print $1}')
-do
-    sed -i "s/SKELETON/\U$project_name/g" $file
-done
-
-for file in $(git grep -r Skeleton | awk -F: '{print $1}')
-do
-    sed -i "s/Skeleton/$project_name/g" $file
-done
-
-mv include/skeleton include/$project_name
+mv include/skeleton include/$lowercase_name
 mkdir build
 
 # Need to use envsubst instead of cat:
-# We want the $project_name to expand
+# We want the $lowercase_name to expand
 # We don't want the bacticks ` to expand
-# Thus, quoting EOF but substituting $project_name with the env var
+# Thus, quoting EOF but substituting $lowercase_name with the env var
 envsubst > README.md << 'EOF'
 # About
 
@@ -68,7 +73,7 @@ This is a project called $project_name.
 It has the following directory structure:
 - `apps` contains a simple binary that calls the library code
 - `docs` contains files for generating html documentation using doxygen & dot
-- `include/$project_name` contains the header files of this project
+- `include/$lowercase_name` contains the public API header files of this project
 - `scripts` contains some scripts
 - `src` contains the source code for the library
 - `tests` contains a simple test using Catch2 testing framework
@@ -87,7 +92,7 @@ ctest --test-dir build
 # Or cmake --build build --target test
 
 # Run a sample binary
-build/apps/name_of_project-bin
+build/apps/$lowercase_name-cli
 ```
 
 It's not a git repository yet, so you may want to do
@@ -106,3 +111,6 @@ rm TODO.md
 rm -rf scripts
 mkdir scripts
 cp $script_dir/version.sh scripts/
+
+echo "Successfully initialized a new project!"
+cat README.md

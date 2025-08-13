@@ -39,7 +39,7 @@ add_custom_target(
     BYPRODUCTS ${CMAKE_BINARY_DIR}/src/version.cpp
 )
 
-set(libname ${CMAKE_PROJECT_NAME}-lib)
+set(libname ${CMAKE_PROJECT_NAME})
 add_library(${libname})
 
 target_sources(${libname}
@@ -83,8 +83,8 @@ set_target_properties(${libname} PROPERTIES CXX_EXTENSIONS OFF)
 #set_target_properties(lib1 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 install(TARGETS ${libname}
-    CONFIGURATIONS Release RelWithDebInfo Debug
-    ARCHIVE DESTINATION ${project_install_dir}/lib
-    LIBRARY DESTINATION ${project_install_dir}/lib
-    FILE_SET public_headers DESTINATION ${project_install_dir}/include
+    CONFIGURATIONS Release
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FILE_SET public_headers DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )

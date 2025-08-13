@@ -11,10 +11,10 @@ target_compile_features(${binname}
 
 target_link_libraries(${binname}
     PRIVATE
-    ${CMAKE_PROJECT_NAME}-lib
+    ${CMAKE_PROJECT_NAME}
     )
 
 install(TARGETS ${binname}
-    CONFIGURATIONS Release RelWithDebInfo Debug
-    RUNTIME DESTINATION ${project_install_dir}/bin
+    CONFIGURATIONS Release
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     )

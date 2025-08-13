@@ -19,9 +19,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-# Set installation directory as name-version/build-type
-set(project_install_dir ${PROJECT_NAME}-${PROJECT_VERSION}/${CMAKE_BUILD_TYPE})
-
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   # Export compile commands
@@ -48,6 +45,9 @@ endif()
 # FetchContent added in CMake 3.11, downloads during the configure step
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
 include(FetchContent)
+
+# Common install subdirectory names as variables
+include(GNUInstallDirs)
 
 # The compiled library code is here
 add_subdirectory(src)

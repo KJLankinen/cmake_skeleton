@@ -21,7 +21,7 @@ target_compile_features(${testbin}
 # Should be linked to the main library, as well as the Catch2 testing library
 target_link_libraries(${testbin}
     PRIVATE
-    ${CMAKE_PROJECT_NAME}-lib
+    ${CMAKE_PROJECT_NAME}
     Catch2::Catch2WithMain
     )
 

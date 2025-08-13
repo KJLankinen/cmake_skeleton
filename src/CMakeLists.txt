@@ -5,6 +5,7 @@ set(version_major ${PROJECT_VERSION_MAJOR})
 set(version_minor ${PROJECT_VERSION_MINOR})
 set(version_patch ${PROJECT_VERSION_PATCH})
 set(version_tweak ${PROJECT_VERSION_TWEAK})
+set(version ${PROJECT_VERSION})
 
 if (NOT DEFINED version_major)
     set(version_major 0)
@@ -42,6 +43,8 @@ add_custom_target(
 set(libname ${CMAKE_PROJECT_NAME})
 add_library(${libname})
 
+# A new syntax from 3.23 onwards for specifying the source files
+# Helps with installing public headers
 target_sources(${libname}
     # source files
     PRIVATE
@@ -82,11 +85,44 @@ set_target_properties(${libname} PROPERTIES CXX_EXTENSIONS OFF)
 # For position independent code
 #set_target_properties(lib1 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
+# Packaging
+# This contains helper functions for creating config files
+include(CMakePackageConfigHelpers)
+
+# Where different cmake related files are installed
+set(CMAKE_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
+
+# Copy the file from this directory to the binary directory
+# after substituting some variables
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
+)
+
+# Generate a version file
+set_property(TARGET ${libname} PROPERTY VERSION ${version})
+set_property(TARGET ${libname} PROPERTY SOVERSION ${version_major})
+
+# Add a custom property that can be used to check if different versions are compatible
+# https://cmake.org/cmake/help/latest/prop_tgt/COMPATIBLE_INTERFACE_STRING.html#prop_tgt:COMPATIBLE_INTERFACE_STRING
+set_property(TARGET ${libname} PROPERTY
+    INTERFACE_${CMAKE_PROJECT_NAME}_MAJOR_VERSION ${version_major})
+set_property(TARGET ${libname} APPEND PROPERTY
+    COMPATIBLE_INTERFACE_STRING ${CMAKE_PROJECT_NAME}_MAJOR_VERSION
+)
+
+# generate the version file for the config file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake"
+    VERSION "${version}"
+    COMPATIBILITY AnyNewerVersion
+)
+
 # Installing
 # Setting a name for the exported target
 # Installing the library and the headers
 install(TARGETS ${libname}
-    EXPORT ${libname}-targets
+    EXPORT ${CMAKE_PROJECT_NAME}Targets
     CONFIGURATIONS Release
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -94,8 +130,15 @@ install(TARGETS ${libname}
     )
 
 # Installing the exported target file
-install(EXPORT ${libname}-targets
-        FILE ${libname}-targets.cmake
-        NAMESPACE ${libname}::
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${libname}
+install(EXPORT ${CMAKE_PROJECT_NAME}Targets
+    FILE ${CMAKE_PROJECT_NAME}Targets.cmake
+    NAMESPACE ${CMAKE_PROJECT_NAME}::
+    DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
+)
+
+# Install the config file and the version file
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_CMAKEDIR}/${CMAKE_PROJECT_NAME}
 )

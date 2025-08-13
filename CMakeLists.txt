@@ -5,7 +5,7 @@ execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/version.sh
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE SKELETON_VERSION)
 
-project(skeleton
+project(Skeleton
     VERSION ${SKELETON_VERSION}
     LANGUAGES CXX)
 

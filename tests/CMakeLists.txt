@@ -8,7 +8,7 @@ FetchContent_MakeAvailable(catch)
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(Catch)
 
-set(testbin tests)
+set(testbin ${project_name_lowercase}-tests)
 
 # Tests need to be added as executables first
 add_executable(${testbin} lib.cpp)

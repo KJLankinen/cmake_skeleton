@@ -1,4 +1,4 @@
-set(binname ${project_name_lowercase}_bin)
+set(binname ${project_name_lowercase}-cli)
 
 add_executable(${binname}
     app.cpp

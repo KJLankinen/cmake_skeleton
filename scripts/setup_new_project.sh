@@ -30,9 +30,9 @@ replace() {
     old=$1
     new=$2
 
-    for file in $(git grep -r $old | awk -F: '{print $1}')
+    for file in $(git grep -r "${old}" | awk -F: '{print $1}')
     do
-        sed -i "s/$old/$new/g" $file
+        sed -i "s/${old}/${new}/g" $file
     done
 }
 
@@ -65,11 +65,14 @@ exit_on_error() {
 # Take on argument from user, replace "skeleton" with that
 [ $# -eq 1 ] || exit_on_error "Give the name of the project as argument"
 
+# Export these so they work with envsubst
 export project_name=$1
 export lowercase_name=${project_name,,}
 export uppercase_name=${lowercase_name^^}
 export capitalized_name=${lowercase_name^}
-user_name="Matti Meikäläinen" #$(git config user.name)
+
+# Take the user's name from git config
+user_name=$(git config user.name)
 
 cwd=${PWD}
 ensure_valid_name_as_cpp_variable || exit_on_error "The lowercase version of the given project name \"$lowercase_name\"\
@@ -81,10 +84,15 @@ script_dir=$(get_script_dir)
 git clone $script_dir/.. $lowercase_name
 cd $lowercase_name
 
+# Replace any placholders with the given project name
 replace skeleton $lowercase_name
 replace SKELETON $uppercase_name
 replace Skeleton $capitalized_name
-replace "Juhana Lankinen" $user_name
+
+# Replace the author's name with the user's name taken from git
+# This way the Copyrights & Licenses of the new project
+# are correct from the start, and not contributed to me
+replace "Juhana Lankinen" "${user_name}"
 
 mv include/skeleton include/$lowercase_name
 mkdir build
@@ -100,8 +108,10 @@ This is a project called $project_name.
 
 It has the following directory structure:
 - `apps` contains a simple binary that calls the library code
+- `build` is the build directory for cmake
 - `docs` contains files for generating html documentation using doxygen & dot
 - `include/$lowercase_name` contains the public API header files of this project
+- `LICENSES` has MIT license. Feel free to change it to anything else.
 - `scripts` contains some scripts
 - `src` contains the source code for the library
 - `tests` contains a simple test using Catch2 testing framework

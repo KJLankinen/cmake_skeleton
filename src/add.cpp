@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "skeleton/lib.hpp"
+#include "skeleton.hpp"
 
 namespace skeleton {
 int add(int a, int b) { return a + b; }

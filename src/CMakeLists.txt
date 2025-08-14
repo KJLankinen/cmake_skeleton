@@ -24,7 +24,7 @@ add_library(${PROJECT_NAME}::${project_name_lowercase} ALIAS ${project_name_lowe
 target_sources(${project_name_lowercase}
     # source files
     PRIVATE
-    lib.cpp
+    add.cpp
     version.cpp
 
     # private headers
@@ -42,8 +42,7 @@ target_sources(${project_name_lowercase}
     BASE_DIRS
     ../include
     FILES
-    ../include/${project_name_lowercase}/lib.hpp
-    ../include/${project_name_lowercase}/version.hpp
+    ../include/${project_name_lowercase}.hpp
     )
 
 # The main library depends on the custom git version target

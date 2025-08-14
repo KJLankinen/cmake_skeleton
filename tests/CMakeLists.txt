@@ -11,7 +11,7 @@ include(Catch)
 set(testbin ${project_name_lowercase}-tests)
 
 # Tests need to be added as executables first
-add_executable(${testbin} lib.cpp)
+add_executable(${testbin} add_tests.cpp)
 
 target_compile_features(${testbin}
     PRIVATE

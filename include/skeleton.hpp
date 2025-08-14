@@ -5,7 +5,6 @@
  */
 
 #pragma once
-
 #include <string_view>
 
 namespace skeleton {
@@ -26,4 +25,10 @@ extern const std::string_view NAME;
 
 /// \brief Prints out some meta information of this project
 void print_version();
-}
+
+/// \brief Add two integers
+///
+/// This adds two integers together. Overflow is not checked.
+///
+int add(int a, int b);
+} // namespace skeleton

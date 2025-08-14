@@ -1,4 +1,4 @@
-set(binname ${project_name_lowercase}-cli)
+set(binname ${project_name_lowercase}_bin)
 
 add_executable(${binname}
     app.cpp
@@ -11,7 +11,12 @@ target_compile_features(${binname}
 
 target_link_libraries(${binname}
     PRIVATE
-    ${CMAKE_PROJECT_NAME}
+    ${project_name_lowercase}
+    )
+
+set_target_properties(${binname}
+    PROPERTIES
+    OUTPUT_NAME ${project_name_lowercase}
     )
 
 install(TARGETS ${binname}

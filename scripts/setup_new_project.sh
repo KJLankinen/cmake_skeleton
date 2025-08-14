@@ -94,7 +94,7 @@ replace Skeleton $capitalized_name
 # are correct from the start, and not contributed to me
 replace "Juhana Lankinen" "${user_name}"
 
-mv include/skeleton include/$lowercase_name
+mv include/skeleton.hpp include/$lowercase_name.hpp
 mkdir build
 
 # Need to use envsubst instead of cat:

@@ -14,6 +14,7 @@ add_custom_target(
     -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/version.cpp
 )
+add_library(${PROJECT_NAME}::version-target ALIAS version-target)
 
 # Add the library and add it also as an alias
 add_library(${project_name_lowercase})

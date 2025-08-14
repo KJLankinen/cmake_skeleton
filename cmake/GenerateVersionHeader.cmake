@@ -8,6 +8,8 @@ if(GIT_EXECUTABLE)
 endif()
 
 # Find the up-to-date version string
+# The output is expected to be a version argument
+# like "0.1.6.0", "1.0" or similar
 execute_process(
     COMMAND ${SCRIPTS_DIR}/version.sh
     OUTPUT_VARIABLE VERSION_STRING

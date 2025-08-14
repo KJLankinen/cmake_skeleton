@@ -1,44 +1,18 @@
 # Find git to get the version
 find_package(Git)
 
-set(version_major ${PROJECT_VERSION_MAJOR})
-set(version_minor ${PROJECT_VERSION_MINOR})
-set(version_patch ${PROJECT_VERSION_PATCH})
-set(version_tweak ${PROJECT_VERSION_TWEAK})
-set(version ${PROJECT_VERSION})
-
-if (NOT DEFINED version_major)
-    set(version_major 0)
-endif()
-
-if (NOT DEFINED version_minor)
-    set(version_minor 0)
-endif()
-
-if (NOT DEFINED version_patch)
-    set(version_patch 0)
-endif()
-
-if (NOT DEFINED version_tweak)
-    set(version_tweak 0)
-endif()
-
-# Run a CMake script to generate the version file with the git hash
+# Run a CMake script to generate the version source file with the git hash
 add_custom_target(
-    version
+    version-target
     ${CMAKE_COMMAND}
+    -D SCRIPTS_DIR=${CMAKE_SOURCE_DIR}/scripts
     -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/version.cpp.in
     -D DST=${CMAKE_CURRENT_BINARY_DIR}/version.cpp
     -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
     -D PROJECT_NAME=${PROJECT_NAME}
     -D PROJECT_NAME_LOWERCASE=${project_name_lowercase}
-    -D PROJECT_VERSION=${PROJECT_VERSION}
-    -D PROJECT_VERSION_MAJOR=${version_major}
-    -D PROJECT_VERSION_MINOR=${version_minor}
-    -D PROJECT_VERSION_PATCH=${version_patch}
-    -D PROJECT_VERSION_TWEAK=${version_tweak}
     -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
-    BYPRODUCTS ${CMAKE_BINARY_DIR}/src/version.cpp
+    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/version.cpp
 )
 
 set(libname ${CMAKE_PROJECT_NAME})
@@ -72,7 +46,7 @@ target_sources(${libname}
     )
 
 # The main library depends on the custom git version target
-add_dependencies(${libname} version)
+add_dependencies(${libname} version-target)
 
 # This depends on (header only) boost
 #target_link_libraries(library PRIVATE Boost::boost)
@@ -98,13 +72,13 @@ configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
 )
 
 # Generate a version file
-set_property(TARGET ${libname} PROPERTY VERSION ${version})
-set_property(TARGET ${libname} PROPERTY SOVERSION ${version_major})
+set_property(TARGET ${libname} PROPERTY VERSION ${PROJECT_VERSION})
+set_property(TARGET ${libname} PROPERTY SOVERSION ${PROJECT_VERSION_MAJOR})
 
 # Add a custom property that can be used to check if different versions are compatible
 # https://cmake.org/cmake/help/latest/prop_tgt/COMPATIBLE_INTERFACE_STRING.html#prop_tgt:COMPATIBLE_INTERFACE_STRING
 set_property(TARGET ${libname} PROPERTY
-    INTERFACE_${CMAKE_PROJECT_NAME}_MAJOR_VERSION ${version_major})
+    INTERFACE_${CMAKE_PROJECT_NAME}_MAJOR_VERSION ${PROJECT_VERSION_MAJOR})
 set_property(TARGET ${libname} APPEND PROPERTY
     COMPATIBLE_INTERFACE_STRING ${CMAKE_PROJECT_NAME}_MAJOR_VERSION
 )
@@ -112,7 +86,7 @@ set_property(TARGET ${libname} APPEND PROPERTY
 # generate the version file for the config file
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_PROJECT_NAME}ConfigVersion.cmake"
-    VERSION "${version}"
+    VERSION "${PROJECT_VERSION}"
     COMPATIBILITY AnyNewerVersion
 )
 

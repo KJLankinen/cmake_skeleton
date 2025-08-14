@@ -140,3 +140,5 @@ cp $script_dir/version.sh scripts/
 
 echo "Successfully initialized a new project \"$lowercase_name\"!"
 cat README.md
+
+set +e

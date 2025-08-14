@@ -3,13 +3,21 @@
 #include <string_view>
 
 namespace skeleton {
-extern const uint32_t PROJECT_VERSION_MAJOR;
-extern const uint32_t PROJECT_VERSION_MINOR;
-extern const uint32_t PROJECT_VERSION_PATCH;
-extern const uint32_t PROJECT_VERSION_TWEAK;
-extern const std::string_view PROJECT_VERSION_STRING;
-extern const std::string_view PROJECT_GIT_HASH;
-extern const std::string_view PROJECT_NAME;
+/// \brief The major component of the version string, e.g. `1` from `1.0.2.6`
+extern const uint32_t VERSION_MAJOR;
+/// \brief The minor component of the version string, e.g. `0` from `1.0.2.6`
+extern const uint32_t VERSION_MINOR;
+/// \brief The patch component of the version string, e.g. `2` from `1.0.2.6`
+extern const uint32_t VERSION_PATCH;
+/// \brief The tweak component of the version string, e.g. `6` from `1.0.2.6`
+extern const uint32_t VERSION_TWEAK;
+/// \brief The version as a string, e.g. `1.0.12`
+extern const std::string_view VERSION_STRING;
+/// \brief The git hash of the latest commit during build time
+extern const std::string_view GIT_HASH;
+/// \brief The name of the project
+extern const std::string_view NAME;
 
+/// \brief Prints out some meta information of this project
 void print_version();
 }

@@ -3,7 +3,7 @@ find_package(Git)
 
 # Run a CMake script to generate the version source file with the git hash
 add_custom_target(
-    version-target
+    ${project_name_lowercase}-version
     ${CMAKE_COMMAND}
     -D SCRIPTS_DIR=${CMAKE_SOURCE_DIR}/scripts
     -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/version.cpp.in
@@ -14,7 +14,6 @@ add_custom_target(
     -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/version.cpp
 )
-add_library(${PROJECT_NAME}::version-target ALIAS version-target)
 
 # Add the library and add it also as an alias
 add_library(${project_name_lowercase})
@@ -48,7 +47,7 @@ target_sources(${project_name_lowercase}
     )
 
 # The main library depends on the custom git version target
-add_dependencies(${project_name_lowercase} version-target)
+add_dependencies(${project_name_lowercase} ${project_name_lowercase}-version)
 
 # This depends on (header only) boost
 #target_link_libraries(library PRIVATE Boost::boost)

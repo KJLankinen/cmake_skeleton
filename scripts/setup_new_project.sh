@@ -69,6 +69,7 @@ export project_name=$1
 export lowercase_name=${project_name,,}
 export uppercase_name=${lowercase_name^^}
 export capitalized_name=${lowercase_name^}
+user_name="Matti Meikäläinen" #$(git config user.name)
 
 cwd=${PWD}
 ensure_valid_name_as_cpp_variable || exit_on_error "The lowercase version of the given project name \"$lowercase_name\"\
@@ -83,6 +84,7 @@ cd $lowercase_name
 replace skeleton $lowercase_name
 replace SKELETON $uppercase_name
 replace Skeleton $capitalized_name
+replace "Juhana Lankinen" $user_name
 
 mv include/skeleton include/$lowercase_name
 mkdir build

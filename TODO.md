@@ -1,6 +1,4 @@
 ## TODO
 
-- Add extern
-    - Move catch there
-    - Add nhlomann::json
-    - Add spdlog or some other
+- Add nhlomann::json to extren
+    - setup an interface/imported target?

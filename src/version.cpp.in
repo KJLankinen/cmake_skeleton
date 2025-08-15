@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "@PROJECT_NAME_LOWERCASE@.hpp"
+#include "@PROJECT_NAME@/@PROJECT_NAME@.hpp"
 #include <cstdio>
 
-namespace @PROJECT_NAME_LOWERCASE@ {
+namespace @PROJECT_NAME@ {
     constexpr uint32_t VERSION_MAJOR = @VERSION_MAJOR@;
     constexpr uint32_t VERSION_MINOR = @VERSION_MINOR@;
     constexpr uint32_t VERSION_PATCH = @VERSION_PATCH@;

@@ -24,7 +24,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/@CMAKE_PROJECT_NAME@Targets.cmake")
 
 # This provides the find_dependecy macro
 include(CMakeFindDependencyMacro)
-#find_dependency(SomeLibraryWeDependOn 2.6.4)
+find_dependency(spdlog 1.15.3)
 
 # This should be the last call in this file
 check_required_components(@CMAKE_PROJECT_NAME@)

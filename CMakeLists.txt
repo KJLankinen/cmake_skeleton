@@ -1,19 +1,29 @@
 cmake_minimum_required(VERSION 3.23...3.29)
 
-# Get a version number
-execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/version.sh
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    OUTPUT_VARIABLE SKELETON_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
+# ------------------------------------------------------------------------------
+# Start skeleton project
+# ------------------------------------------------------------------------------
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-project(Skeleton
-    VERSION ${SKELETON_VERSION}
-    LANGUAGES CXX)
+include(utils)
 
-string(TOLOWER ${PROJECT_NAME} project_name_lowercase)
+skeleton_extract_version()
+
+project(skeleton VERSION ${SKELETON_VERSION} LANGUAGES CXX)
+message(STATUS "Build skeleton: ${SKELETON_VERSION}")
+
+include(GNUInstallDirs)
+
+# Set variables
+string(COMPARE EQUAL "${CMAKE_PROJECT_NAME}" "${PROJECT_NAME}" skeleton_main_project)
+
+set(SKELETON_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
 
 set(default_build_type "Release")
+
+# Options
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
   set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
@@ -23,39 +33,13 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-# Only do these if this is the main project, and not if it is included through add_subdirectory
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  # Export compile commands
-  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-  # Let's nicely support folders in IDEs
-  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-  # Testing only available if this is the main app
-  # Note this needs to be done in the main CMakeLists
-  # since it calls enable_testing, which must be in the
-  # main CMakeLists.
-  include(CTest)
-
-  # Docs only available if this is the main app
-  find_package(Doxygen)
-  if(Doxygen_FOUND)
-    add_subdirectory(docs)
-  else()
-    message(STATUS "Doxygen not found, not building docs")
-  endif()
-endif()
-
 # FetchContent added in CMake 3.11, downloads during the configure step
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
 include(FetchContent)
 
-# Set install directories
-set(project_dirname ${project_name_lowercase}-${PROJECT_VERSION_MAJOR})
-set(PROJECT_INSTALL_LIBDIR lib/${project_dirname})
-set(PROJECT_INSTALL_BINDIR bin)
-set(PROJECT_INSTALL_INCLUDEDIR include/${project_dirname})
-set(PROJECT_INSTALL_CMAKEDIR ${PROJECT_INSTALL_LIBDIR}/cmake)
+# This cmake script file includes external packages that
+# are fetched using FetchContent
+include(external/dependencies.cmake)
 
 # The compiled library code is here
 add_subdirectory(src)
@@ -63,9 +47,26 @@ add_subdirectory(src)
 # The executable code is here
 add_subdirectory(apps)
 
-# Testing only available if this is the main app
-# Emergency override PROJECT_NAME_BUILD_TESTING provided as well
-if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ${CMAKE_PROJECT_NAME}_BUILD_TESTING)
-   AND BUILD_TESTING)
-  add_subdirectory(tests)
+# Skip these if included through add_subdirectory
+if(skeleton_main_project)
+    # Export compile commands, usable by LSPs in editors
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+    # Let's nicely support folders in IDEs
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+    # Testing only available if this is the main app
+    # Note this needs to be done in the main CMakeLists
+    # since it calls enable_testing, which must be in the
+    # main CMakeLists.
+    include(CTest)
+    add_subdirectory(tests)
+
+    # Docs only available if this is the main app
+    find_package(Doxygen)
+    if(Doxygen_FOUND)
+      add_subdirectory(docs)
+    else()
+      message(STATUS "Doxygen not found, not building docs")
+    endif()
 endif()

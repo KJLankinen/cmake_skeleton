@@ -2,8 +2,7 @@ set(DOXYGEN_EXTRACT_ALL YES)
 set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
 
 doxygen_add_docs(docs
-    ${project_name_lowercase}/lib.hpp
-    ${project_name_lowercase}/version.hpp
+    ${PROJECT_NAME}/${PROJECT_NAME}.hpp
     "${CMAKE_CURRENT_SOURCE_DIR}/mainpage.md"
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/include"
     )

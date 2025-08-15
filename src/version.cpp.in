@@ -5,7 +5,7 @@
  */
 
 #include "@PROJECT_NAME@/@PROJECT_NAME@.hpp"
-#include <cstdio>
+#include <spdlog/spdlog.h>
 
 namespace @PROJECT_NAME@ {
     constexpr uint32_t VERSION_MAJOR = @VERSION_MAJOR@;
@@ -17,10 +17,6 @@ namespace @PROJECT_NAME@ {
     constexpr std::string_view NAME = "@PROJECT_NAME@";
 
     void print_version() {
-        std::printf("%.*s: Version %.*s, commit %.*s\n",
-                static_cast<int32_t>(NAME.length()), NAME.data(),
-                static_cast<int32_t>(VERSION_STRING.length()), VERSION_STRING.data(),
-                static_cast<int32_t>(GIT_HASH.length()), GIT_HASH.data()
-                );
+        spdlog::info("{}: Version {}, commit {}", NAME, VERSION_STRING, GIT_HASH);
     }
 }

@@ -1,23 +1,32 @@
-# Find git to get the version
+# ------------------------------------------------------------------------------
+# Packages
+# ------------------------------------------------------------------------------
 find_package(Git)
 
-# Run a CMake script to generate the version source file with the git hash
+# ------------------------------------------------------------------------------
+# Version generation during build time
+# ------------------------------------------------------------------------------
 add_custom_target(
     ${PROJECT_NAME}-version
     ${CMAKE_COMMAND}
-    -D SCRIPTS_DIR=${CMAKE_SOURCE_DIR}/scripts
     -D SRC=${CMAKE_CURRENT_SOURCE_DIR}/version.cpp.in
     -D DST=${CMAKE_CURRENT_BINARY_DIR}/version.cpp
     -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
     -D PROJECT_NAME=${PROJECT_NAME}
+    -D DIR=${CMAKE_SOURCE_DIR}
     -P ${CMAKE_SOURCE_DIR}/cmake/GenerateVersionHeader.cmake
     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/version.cpp
 )
 
-# Add the library and add it also as an alias
+# ------------------------------------------------------------------------------
+# Targets
+# ------------------------------------------------------------------------------
 add_library(${PROJECT_NAME})
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
+# ------------------------------------------------------------------------------
+# Sources
+# ------------------------------------------------------------------------------
 # A new syntax from 3.23 onwards for specifying the source files
 # Helps with installing public headers
 target_sources(${PROJECT_NAME}
@@ -44,15 +53,21 @@ target_sources(${PROJECT_NAME}
     ../include/${PROJECT_NAME}/${PROJECT_NAME}.hpp
     )
 
-# The main library depends on the custom git version target
+# ------------------------------------------------------------------------------
+# Dependecies
+# ------------------------------------------------------------------------------
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}-version)
-
-# This depends on spdlog
 target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)
 
+# ------------------------------------------------------------------------------
+# Compilation
+# ------------------------------------------------------------------------------
 # All users of this library will need at least C++20
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
+# ------------------------------------------------------------------------------
+# Properties
+# ------------------------------------------------------------------------------
 # Don't replace e.g. std=c++20 with std=g++20
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
@@ -63,9 +78,9 @@ set_target_properties(${PROJECT_NAME}
 # For position independent code
 #set_target_properties(lib1 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-# ----------------------------------------
+# ------------------------------------------------------------------------------
 # Packaging
-# ----------------------------------------
+# ------------------------------------------------------------------------------
 # This contains helper functions for creating config files
 include(CMakePackageConfigHelpers)
 
@@ -98,9 +113,9 @@ write_basic_package_version_file(
     COMPATIBILITY AnyNewerVersion
 )
 
-# ----------------------------------------
+# ------------------------------------------------------------------------------
 # Installing
-# ----------------------------------------
+# ------------------------------------------------------------------------------
 # Setting a name for the exported target
 # Installing the library and the headers
 install(TARGETS ${PROJECT_NAME}

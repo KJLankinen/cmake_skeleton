@@ -33,7 +33,7 @@ list(APPEND external_packages spdlog)
 set(SPDLOG_INSTALL ON)
 
 # Catch2
-if(skeleton_main_project)
+if(SKELETON_MAIN_PROJECT)
     FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
@@ -51,7 +51,7 @@ message(STATUS "Making declared fetch contents available")
 
 FetchContent_MakeAvailable(${external_packages})
 
-if(skeleton_main_project)
+if(SKELETON_MAIN_PROJECT)
     # Add this to module path so include(Catch) works in tests directory
     list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 endif()

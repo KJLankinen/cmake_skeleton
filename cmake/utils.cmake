@@ -1,10 +1,11 @@
-function(skeleton_extract_version)
+function(skeleton_extract_version DIR)
     # Find the up-to-date version string
     # The output is expected to be a version argument
     # like "0.1.6.0", "1.0" or similar
     execute_process(
-        COMMAND ${CMAKE_CURRENT_LIST_DIR}/scripts/version.sh
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        #CMAKE_CURRENT_LIST_DIR
+        COMMAND ${DIR}/scripts/version.sh
+        WORKING_DIRECTORY ${DIR}
         OUTPUT_VARIABLE SKELETON_VERSION
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )

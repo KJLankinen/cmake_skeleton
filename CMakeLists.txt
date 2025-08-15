@@ -7,31 +7,42 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 include(utils)
 
-skeleton_extract_version()
+skeleton_extract_version(${CMAKE_CURRENT_LIST_DIR})
 
 project(skeleton VERSION ${SKELETON_VERSION} LANGUAGES CXX)
 message(STATUS "Build skeleton: ${SKELETON_VERSION}")
 
 include(GNUInstallDirs)
 
-# Set variables
-string(COMPARE EQUAL "${CMAKE_PROJECT_NAME}" "${PROJECT_NAME}" skeleton_main_project)
+# ------------------------------------------------------------------------------
+# Set default build to Release
+# ------------------------------------------------------------------------------
+set(default_build_type "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
+
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+# ------------------------------------------------------------------------------
+# Set SKELETON_MAIN_PROJECT to ON if this is the main project
+# ------------------------------------------------------------------------------
+string(COMPARE EQUAL "${CMAKE_PROJECT_NAME}" "${PROJECT_NAME}" SKELETON_MAIN_PROJECT)
+
+# ------------------------------------------------------------------------------
+# Options & variables
+# ------------------------------------------------------------------------------
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+option(CMAKE_EXPORT_COMPILE_COMMANDS "Export compile commands for editors" ON)
 
 set(SKELETON_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
 
-set(default_build_type "Release")
-
-# Options
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
-      STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-    "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
+# ------------------------------------------------------------------------------
+# External dependencies
+# ------------------------------------------------------------------------------
+# Declare these before any subdirectories
 
 # FetchContent added in CMake 3.11, downloads during the configure step
 # FetchContent_MakeAvailable was added in CMake 3.14; simpler usage
@@ -41,17 +52,19 @@ include(FetchContent)
 # are fetched using FetchContent
 include(external/dependencies.cmake)
 
-# The compiled library code is here
+# ------------------------------------------------------------------------------
+# Subdirectories
+# ------------------------------------------------------------------------------
+# Libraries
 add_subdirectory(src)
 
-# The executable code is here
+# Executables
 add_subdirectory(apps)
 
-# Skip these if included through add_subdirectory
-if(skeleton_main_project)
-    # Export compile commands, usable by LSPs in editors
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
+# ------------------------------------------------------------------------------
+# Main project specifics
+# ------------------------------------------------------------------------------
+if(SKELETON_MAIN_PROJECT)
     # Let's nicely support folders in IDEs
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

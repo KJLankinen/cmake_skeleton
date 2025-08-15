@@ -8,11 +8,11 @@
 #include <spdlog/spdlog.h>
 
 namespace @PROJECT_NAME@ {
-    constexpr uint32_t VERSION_MAJOR = @VERSION_MAJOR@;
-    constexpr uint32_t VERSION_MINOR = @VERSION_MINOR@;
-    constexpr uint32_t VERSION_PATCH = @VERSION_PATCH@;
-    constexpr uint32_t VERSION_TWEAK = @VERSION_TWEAK@;
-    constexpr std::string_view VERSION_STRING = "@VERSION_STRING@";
+    constexpr uint32_t VERSION_MAJOR = @SKELETON_VERSION_MAJOR@;
+    constexpr uint32_t VERSION_MINOR = @SKELETON_VERSION_MINOR@;
+    constexpr uint32_t VERSION_PATCH = @SKELETON_VERSION_PATCH@;
+    constexpr uint32_t VERSION_TWEAK = @SKELETON_VERSION_TWEAK@;
+    constexpr std::string_view VERSION_STRING = "@SKELETON_VERSION@";
     constexpr std::string_view GIT_HASH = "@GIT_HASH@";
     constexpr std::string_view NAME = "@PROJECT_NAME@";
 

@@ -1,3 +1,5 @@
+include(${DIR}/cmake/utils.cmake)
+
 # Get the latest commit hash of the working branch
 if(GIT_EXECUTABLE)
   execute_process(
@@ -7,27 +9,29 @@ if(GIT_EXECUTABLE)
     )
 endif()
 
-# Find the up-to-date version string
-# The output is expected to be a version argument
-# like "0.1.6.0", "1.0" or similar
-execute_process(
-    COMMAND ${SCRIPTS_DIR}/version.sh
-    OUTPUT_VARIABLE VERSION_STRING
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+## Find the up-to-date version string
+## The output is expected to be a version argument
+## like "0.1.6.0", "1.0" or similar
+#execute_process(
+#    COMMAND ${SCRIPTS_DIR}/version.sh
+#    OUTPUT_VARIABLE VERSION_STRING
+#    OUTPUT_STRIP_TRAILING_WHITESPACE
+#)
+#
+## Make sure the version list/string contains all four arguments
+## Append 0s if it's shorter than 4
+#string(REPLACE "." ";" VERSION_LIST ${VERSION_STRING})
+#list(LENGTH VERSION_LIST LEN)
+#while(LEN LESS 4)
+#    list(APPEND VERSION_LIST 0)
+#    list(LENGTH VERSION_LIST LEN)
+#endwhile()
+#
+#list(GET VERSION_LIST 0 VERSION_MAJOR)
+#list(GET VERSION_LIST 1 VERSION_MINOR)
+#list(GET VERSION_LIST 2 VERSION_PATCH)
+#list(GET VERSION_LIST 3 VERSION_TWEAK)
 
-# Make sure the version list/string contains all four arguments
-# Append 0s if it's shorter than 4
-string(REPLACE "." ";" VERSION_LIST ${VERSION_STRING})
-list(LENGTH VERSION_LIST LEN)
-while(LEN LESS 4)
-    list(APPEND VERSION_LIST 0)
-    list(LENGTH VERSION_LIST LEN)
-endwhile()
-
-list(GET VERSION_LIST 0 VERSION_MAJOR)
-list(GET VERSION_LIST 1 VERSION_MINOR)
-list(GET VERSION_LIST 2 VERSION_PATCH)
-list(GET VERSION_LIST 3 VERSION_TWEAK)
+skeleton_extract_version(${DIR})
 
 configure_file(${SRC} ${DST} @ONLY)

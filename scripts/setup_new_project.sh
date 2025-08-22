@@ -160,7 +160,6 @@ EOF
 # Remove the cloned git directory: we don't want the history of this example
 # repository to be visible in the fresh project's repository.
 rm -rf .git
-rm TODO.md
 
 # Remove all scripts except the version script. The other scripts, like this
 # one, are useful for setting up the repo, but not useful when working on

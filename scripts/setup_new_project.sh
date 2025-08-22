@@ -120,9 +120,10 @@ This is a project called $project_name.
 It has the following directory structure:
 - `apps` contains a simple binary that calls the library code
 - `build` is the build directory for cmake
+- `data` contains a json file the app in `apps` uses
 - `docs` contains files for generating html documentation using doxygen & dot
 - `include/$lowercase_name` contains the public API header files of this project
-- `LICENSES` has MIT license. Feel free to change it to anything else.
+- `LICENSES` contains an MIT license. Feel free to change it to anything else.
 - `scripts` contains some scripts
 - `src` contains the source code for the library
 - `tests` contains a simple test using Catch2 testing framework

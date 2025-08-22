@@ -92,7 +92,8 @@ replace Skeleton $capitalized_name
 # are correct from the start, and not contributed to me
 replace "Juhana Lankinen" "${user_name}"
 
-mv include/skeleton/skeleton.hpp include/$lowercase_name/$lowercase_name.hpp
+mv include/skeleton include/$lowercase_name
+mv include/$lowercase_name/skeleton.hpp include/$lowercase_name/$lowercase_name.hpp
 mkdir build
 
 # Need to use envsubst instead of cat:
@@ -128,7 +129,7 @@ ctest --test-dir build
 # Or cmake --build build --target test
 
 # Run a sample binary
-build/apps/$lowercase_name-cli
+build/apps/$lowercase_name
 ```
 
 It's not a git repository yet, so you may want to do

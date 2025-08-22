@@ -42,6 +42,14 @@ if(SKELETON_MAIN_PROJECT)
     list(APPEND external_packages Catch2)
 endif()
 
+# json
+# Recommended by the project to use this URL format as the download size of the
+# repository is large.
+FetchContent_Declare(
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz
+    )
+list(APPEND external_packages json)
 
 # --------------------------------------------
 # MAKEAVAILABLE

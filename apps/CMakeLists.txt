@@ -16,7 +16,12 @@ target_compile_features(${binname} PRIVATE cxx_std_20)
 # ------------------------------------------------------------------------------
 # Dependencies
 # ------------------------------------------------------------------------------
-target_link_libraries(${binname} PRIVATE ${PROJECT_NAME})
+target_link_libraries(${binname}
+    PRIVATE
+    ${PROJECT_NAME}
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+    )
 
 # ------------------------------------------------------------------------------
 # Properties

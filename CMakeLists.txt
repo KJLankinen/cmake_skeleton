@@ -35,7 +35,7 @@ string(COMPARE EQUAL "${CMAKE_PROJECT_NAME}" "${PROJECT_NAME}" SKELETON_MAIN_PRO
 # Options & variables
 # ------------------------------------------------------------------------------
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-option(CMAKE_EXPORT_COMPILE_COMMANDS "Export compile commands for editors" ON)
+option(SKELETON_EXPORT_COMPILE_COMMANDS "Export compile commands for editors" ON)
 
 set(SKELETON_INSTALL_CMAKEDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
 
@@ -53,20 +53,18 @@ include(FetchContent)
 include(external/dependencies.cmake)
 
 # ------------------------------------------------------------------------------
-# Subdirectories
-# ------------------------------------------------------------------------------
-# Libraries
-add_subdirectory(src)
-
-# Executables
-add_subdirectory(apps)
-
-# ------------------------------------------------------------------------------
 # Main project specifics
 # ------------------------------------------------------------------------------
 if(SKELETON_MAIN_PROJECT)
     # Let's nicely support folders in IDEs
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+    # Generate a compile_commands.json if the option is set
+    # It helps editors/language servers find the include paths
+    # Should be done before adding any subdirectories
+    if(SKELETON_EXPORT_COMPILE_COMMANDS)
+        set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    endif()
 
     # Testing only available if this is the main app
     # Note this needs to be done in the main CMakeLists
@@ -83,3 +81,12 @@ if(SKELETON_MAIN_PROJECT)
       message(STATUS "Doxygen not found, not building docs")
     endif()
 endif()
+
+# ------------------------------------------------------------------------------
+# Subdirectories
+# ------------------------------------------------------------------------------
+# Libraries
+add_subdirectory(src)
+
+# Executables
+add_subdirectory(apps)

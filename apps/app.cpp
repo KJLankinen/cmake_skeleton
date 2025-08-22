@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Juhana Lankinen
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <cstdint>
 #include <fstream>
 #include <nlohmann/json.hpp>

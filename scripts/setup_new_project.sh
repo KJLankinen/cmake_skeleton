@@ -12,7 +12,8 @@ get_script_dir() {
     # Resolve symlinks recursively
     while [ -L "$SOURCE_PATH" ]; do
         # Get symlink directory
-        SYMLINK_DIR="$( cd -P "$( dirname "$SOURCE_PATH" )" >/dev/null 2>&1 && pwd )"
+        SYMLINK_DIR="$(cd -P "$(dirname "$SOURCE_PATH")" >/dev/null 2>&1 \
+            && pwd)"
         # Resolve symlink target (relative or absolute)
         SOURCE_PATH="$(readlink "$SOURCE_PATH")"
         # Check if candidate path is relative or absolute
@@ -22,12 +23,12 @@ get_script_dir() {
         fi
     done
     # Get final script directory path from fully resolved source path
-    SCRIPT_DIR="$(cd -P "$( dirname "$SOURCE_PATH" )" >/dev/null 2>&1 && pwd)"
+    SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE_PATH")" >/dev/null 2>&1 && pwd)"
     echo "$SCRIPT_DIR"
 }
 
+# This function replaces any $old in the repository with $new
 replace() {
-    # This function replaces any $old in the repository with $new
     old=$1
     new=$2
 
@@ -37,18 +38,19 @@ replace() {
     done
 }
 
+# This function generates a C++ file with the lowercase version of the
+# given project name as a variable. Then the file is compiled using cmake
+# to see if the project name is suitable or not.
 ensure_valid_name_as_cpp_variable() {
-    # This function generates a C++ file with the
-    # lowercase version of the given project name as a variable.
-    # Then the file is compiled using cmake to see if the
-    # project name is suitable or not.
-    
     tmpdir=/tmp/setup_new_cmake_project_tmp
     mkdir -p $tmpdir
     cd $tmpdir 
     cat > CMakeLists.txt << EOF
 project($project_name)
-file(GENERATE OUTPUT main.cpp CONTENT "int main() { int $lowercase_name = 0; }\n")
+file(GENERATE
+    OUTPUT main.cpp
+    CONTENT "int main() { int $lowercase_name = 0; }\n"
+    )
 add_executable(exe main.cpp)
 EOF
     cmake . . >/dev/null 2>&1
@@ -69,16 +71,24 @@ export lowercase_name=${project_name,,}
 export uppercase_name=${lowercase_name^^}
 export capitalized_name=${lowercase_name^}
 
+# Bail if the directory already exists
+[ ! -d "$lowercase_name" ] || exit_on_error "Failed to setup a new project:\
+    the directory \"$lowercase_name\" already exists"
+
 # Take the user's name from git config
 user_name=$(git config user.name)
 
+# Check the name for suitability
 cwd=${PWD}
-ensure_valid_name_as_cpp_variable || exit_on_error "The lowercase version of the given project name \"$lowercase_name\"\
+ensure_valid_name_as_cpp_variable || exit_on_error \
+    "The lowercase version of the given project name \"$lowercase_name\"\
     is not a valid C++ variable name, which it needs to be"
 cd $cwd
 
+# Get this file's directory...
 script_dir=$(get_script_dir)
 
+# ... because we'll clone the parent directory
 git clone $script_dir/.. $lowercase_name
 cd $lowercase_name
 
@@ -88,17 +98,19 @@ replace SKELETON $uppercase_name
 replace Skeleton $capitalized_name
 
 # Replace the author's name with the user's name taken from git
-# This way the Copyrights & Licenses of the new project
-# are correct from the start, and not contributed to me
+# This way the Copyrights & Licenses of the new project are correct
+# from the start, and not contributed to me.
 replace "Juhana Lankinen" "${user_name}"
 
 mv include/skeleton include/$lowercase_name
-mv include/$lowercase_name/skeleton.hpp include/$lowercase_name/$lowercase_name.hpp
+mv include/$lowercase_name/skeleton.hpp \
+    include/$lowercase_name/$lowercase_name.hpp
 mkdir build
 
+# Write a helpful README.md to the new project directory.
 # Need to use envsubst instead of cat:
-# We want the $lowercase_name to expand
-# We don't want the bacticks ` to expand
+# - We want the $lowercase_name to expand
+# - We don't want the bacticks ` to expand
 # Thus, quoting EOF but substituting $lowercase_name with the env var
 envsubst > README.md << 'EOF'
 # About
@@ -139,12 +151,19 @@ git add .
 git commit -m "Initial commit"
 
 # Git tags are used by CMake to set the version number of the project
+# See scripts/version.sh and cmake/utils.cmake for how this is done
 git tag -a v0.1
 ```
 EOF
 
+# Remove the cloned git directory: we don't want the history of this example
+# repository to be visible in the fresh project's repository.
 rm -rf .git
 rm TODO.md
+
+# Remove all scripts except the version script. The other scripts, like this
+# one, are useful for setting up the repo, but not useful when working on
+# a new project.
 rm -rf scripts
 mkdir scripts
 cp $script_dir/version.sh scripts/

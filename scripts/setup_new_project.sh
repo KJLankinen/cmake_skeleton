@@ -1,10 +1,11 @@
 #!/bin/bash
+#
+# This script uses an example CMake based C++ project to create a new one.
 
 set -e
 
 # Function taken from stack overflow for finding the directory of this script
-get_script_dir()
-{
+get_script_dir() {
     local SOURCE_PATH="${BASH_SOURCE[0]}"
     local SYMLINK_DIR
     local SCRIPT_DIR
@@ -47,14 +48,11 @@ ensure_valid_name_as_cpp_variable() {
     cd $tmpdir 
     cat > CMakeLists.txt << EOF
 project($project_name)
-file(GENERATE
-    OUTPUT main.cpp
-    CONTENT "int main() { int $lowercase_name = 0; }\n"
-    )
+file(GENERATE OUTPUT main.cpp CONTENT "int main() { int $lowercase_name = 0; }\n")
 add_executable(exe main.cpp)
 EOF
-cmake . . >/dev/null 2>&1
-cmake --build . >/dev/null 2>&1
+    cmake . . >/dev/null 2>&1
+    cmake --build . >/dev/null 2>&1
 }
 
 exit_on_error() {
@@ -94,7 +92,7 @@ replace Skeleton $capitalized_name
 # are correct from the start, and not contributed to me
 replace "Juhana Lankinen" "${user_name}"
 
-mv include/skeleton.hpp include/$lowercase_name.hpp
+mv include/skeleton/skeleton.hpp include/$lowercase_name/$lowercase_name.hpp
 mkdir build
 
 # Need to use envsubst instead of cat:
